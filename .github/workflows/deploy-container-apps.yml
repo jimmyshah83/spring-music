@@ -21,6 +21,7 @@ jobs:
         uses: azure/container-apps-deploy-action@v0
         with:
           appSourcePath: ${{ github.workspace }}
+          dockerfilePath: Dockerfile
           acrName: demoreg01
           containerAppName: spring-music
           resourceGroup: containers-rg
