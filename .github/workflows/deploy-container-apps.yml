@@ -20,7 +20,7 @@ jobs:
       - name: Build and deploy Container App
         uses: azure/container-apps-deploy-action@v0
         with:
-          appSourcePath: ${{ github.workspace }}/src
+          appSourcePath: ${{ github.workspace }}
           acrName: demoreg01
           containerAppName: spring-music
           resourceGroup: containers-rg
