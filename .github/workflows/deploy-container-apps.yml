@@ -17,10 +17,10 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-#      - name: Build and deploy Container App
-#        uses: azure/container-apps-deploy-action@v0
-#        with:
-#          appSourcePath: ${{ github.workspace }}/src
-#          acrName: <ACR_NAME>
-#          containerAppName: my-container-app
-#          resourceGroup: my-container-app-rg
+      - name: Build and deploy Container App
+        uses: azure/container-apps-deploy-action@v0
+        with:
+          appSourcePath: ${{ github.workspace }}/src
+          acrName: demoreg01
+          containerAppName: spring-music
+          resourceGroup: containers-rg
