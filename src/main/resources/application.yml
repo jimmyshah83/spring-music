@@ -42,11 +42,12 @@ spring:
     activate:
       on-profile: postgres
   datasource:
-    url: "jdbc:postgresql://localhost/music"
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password:
+    url: jdbc:postgresql://c.spring-music.postgres.database.azure.com:5432/citus
+    # driver-class-name: org.postgresql.Driver
+    username: citus
+    password: ContainersDemo%
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.ProgressDialect
+        # ddl-auto: create-drop

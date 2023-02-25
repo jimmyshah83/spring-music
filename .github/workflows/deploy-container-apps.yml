@@ -37,4 +37,5 @@ jobs:
           dockerfilePath: Dockerfile
           acrName: demoreg01
           containerAppName: spring-music
+          environmentVariables: 'spring.profiles.active=postgres'
           resourceGroup: containers-rg
