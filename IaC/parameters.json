@@ -1,0 +1,61 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serverGroupName": {
+            "value": "spring-music"
+        },
+        "location": {
+            "value": "canadacentral"
+        },
+        "administratorLoginPassword": {
+            "value": "password"
+        },
+        "previewFeatures": {
+            "value": false
+        },
+        "postgresqlVersion": {
+            "value": "15"
+        },
+        "coordinatorVcores": {
+            "value": 2
+        },
+        "coordinatorStorageSizeMB": {
+            "value": 131072
+        },
+        "numWorkers": {
+            "value": 0
+        },
+        "workerVcores": {
+            "value": 4
+        },
+        "workerStorageSizeMB": {
+            "value": 524288
+        },
+        "enableHa": {
+            "value": false
+        },
+        "enablePublicIpAccess": {
+            "value": true
+        },
+        "serverGroupTags": {
+            "value": {}
+        },
+        "firewallRules": {
+            "value": {
+                "rules": [
+                    {
+                        "name": "ClientIPAddress_2023-2-25-10-7-8",
+                        "startIPAddress": "142.114.114.185",
+                        "endIPAddress": "142.114.114.185"
+                    },
+                    {
+                        "name": "AllowAllAzureServicesAndResourcesWithinAzureIps_2023-2-25_10-7-17",
+                        "endIPAddress": "0.0.0.0",
+                        "startIPAddress": "0.0.0.0"
+                    }
+                ]
+            }
+        }
+    }
+}

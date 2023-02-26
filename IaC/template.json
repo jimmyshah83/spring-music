@@ -1,0 +1,133 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serverGroupName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "administratorLoginPassword": {
+            "type": "secureString"
+        },
+        "previewFeatures": {
+            "type": "bool"
+        },
+        "postgresqlVersion": {
+            "type": "string"
+        },
+        "coordinatorVcores": {
+            "type": "int"
+        },
+        "coordinatorStorageSizeMB": {
+            "type": "int"
+        },
+        "numWorkers": {
+            "type": "int"
+        },
+        "workerVcores": {
+            "type": "int"
+        },
+        "workerStorageSizeMB": {
+            "type": "int"
+        },
+        "enableHa": {
+            "type": "bool"
+        },
+        "enablePublicIpAccess": {
+            "type": "bool"
+        },
+        "serverGroupTags": {
+            "type": "object"
+        },
+        "firewallRules": {
+            "type": "object"
+        }
+    },
+    "variables": {
+        "firewallRules": "[parameters('firewallRules').rules]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('serverGroupName')]",
+            "type": "Microsoft.DBforPostgreSQL/serverGroupsv2",
+            "kind": "CosmosDBForPostgreSQL",
+            "apiVersion": "2020-10-05-privatepreview",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('serverGroupTags')]",
+            "properties": {
+                "createMode": "Default",
+                "administratorLogin": "citus",
+                "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+                "backupRetentionDays": 35,
+                "enableMx": false,
+                "enableZfs": false,
+                "previewFeatures": "[parameters('previewFeatures')]",
+                "postgresqlVersion": "[parameters('postgresqlVersion')]",
+                "serverRoleGroups": [
+                    {
+                        "name": "",
+                        "role": "Coordinator",
+                        "serverCount": 1,
+                        "serverEdition": "GeneralPurpose",
+                        "vCores": "[parameters('coordinatorVcores')]",
+                        "storageQuotaInMb": "[parameters('coordinatorStorageSizeMB')]",
+                        "enableHa": "[parameters('enableHa')]"
+                    },
+                    {
+                        "name": "",
+                        "role": "Worker",
+                        "serverCount": "[parameters('numWorkers')]",
+                        "serverEdition": "MemoryOptimized",
+                        "vCores": "[parameters('workerVcores')]",
+                        "storageQuotaInMb": "[parameters('workerStorageSizeMB')]",
+                        "enableHa": "[parameters('enableHa')]",
+                        "enablePublicIpAccess": "[parameters('enablePublicIpAccess')]"
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "apiVersion": "2019-08-01",
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('serverGroupName'), concat('-firewallRules-', copyIndex()))]",
+            "dependsOn": [
+                "[concat('Microsoft.DBforPostgreSQL/serverGroupsv2', concat('/', parameters('serverGroupName')))]"
+            ],
+            "resources": [],
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {},
+                "template": {
+                    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "type": "Microsoft.DBforPostgreSQL/serverGroupsv2/firewallRules",
+                            "name": "[concat(parameters('serverGroupName'),'/',variables('firewallRules')[copyIndex()].name)]",
+                            "apiVersion": "2020-10-05-privatepreview",
+                            "properties": {
+                                "startIpAddress": "[variables('firewallRules')[copyIndex()].startIPAddress]",
+                                "endIpAddress": "[variables('firewallRules')[copyIndex()].endIPAddress]"
+                            }
+                        }
+                    ],
+                    "outputs": {}
+                }
+            },
+            "subscriptionId": "1d8a3971-973e-4b52-841b-16614e79c84f",
+            "resourceGroup": "containers-rg",
+            "copy": {
+                "count": "[if(greater(length(variables('firewallRules')), 0), length(variables('firewallRules')), 1)]",
+                "mode": "Serial",
+                "name": "firewallRulesIterator"
+            },
+            "condition": "[greater(length(variables('firewallRules')), 0)]"
+        }
+    ],
+    "outputs": {}
+}
