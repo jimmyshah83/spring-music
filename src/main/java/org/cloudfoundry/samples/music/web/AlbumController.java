@@ -11,7 +11,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/albums")
-public class AlbumController {
+public class AlbumController {  
     private static final Logger logger = LoggerFactory.getLogger(AlbumController.class);
     private CrudRepository<Album, String> repository;
 
